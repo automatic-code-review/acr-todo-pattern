@@ -8,7 +8,7 @@ def review(config):
     path_source = config['path_source']
 
     comments = []
-    regex_id = config['regexId']
+    regex_id_list = config['regexId']
     todos_found = find_todo_in_files(path_source, config['extensions'])
 
     for file_path, line_number, line in todos_found:
@@ -23,9 +23,9 @@ def review(config):
         if len(parts) >= 1:
             has_id = False
 
-            if regex_id:
+            if len(regex_id_list) > 0:
                 descr_id = parts[0]
-                has_id = re.match(regex_id, descr_id)
+                has_id = has_id_in_comment(regex_id_list, descr_id)
                 error = not has_id
 
             descr_comment = ""
@@ -56,6 +56,14 @@ def review(config):
             ))
 
     return comments
+
+
+def has_id_in_comment(regex_id_list, descr_id):
+    for regex in regex_id_list:
+        if re.match(regex, descr_id):
+            return True
+
+    return False
 
 
 def find_todo_in_files(directory, extensions):

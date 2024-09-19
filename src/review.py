@@ -71,7 +71,13 @@ def find_todo_in_files(directory, extensions):
 
     for root, dirs, files in os.walk(directory):
         for file in files:
-            if any(file.endswith(ext) for ext in extensions):
+            is_ok = False
+            for ext in extensions:
+                if re.match(ext, file):
+                    is_ok = True
+                    break
+
+            if is_ok:
                 file_path = os.path.join(root, file)
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:

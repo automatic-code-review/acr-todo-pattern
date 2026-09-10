@@ -79,6 +79,10 @@ def find_todo_in_files(directory, extensions):
 
             if is_ok:
                 file_path = os.path.join(root, file)
+
+                if not os.path.isfile(file_path):
+                    continue
+
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:
                         lines = f.readlines()
@@ -86,7 +90,7 @@ def find_todo_in_files(directory, extensions):
                             line_whitout_space = line.replace(" ", "")
                             if '//TODO' in line_whitout_space or '#TODO' in line_whitout_space:
                                 todos.append((file_path, line_number, line))
-                except UnicodeDecodeError:
+                except (UnicodeDecodeError, OSError):
                     pass
 
     return todos
